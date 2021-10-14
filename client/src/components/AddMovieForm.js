@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 
 import axios from 'axios';
 const initialState = {
-	title: "Title",
-	director: "Director",
-	genre: "Genre",
+	title: "",
+	director: "",
+	genre: "",
 	metascore: 99,
-	description: "Description"
+	description: ""
 }
 const AddMovieForm = () => {
 	const { push } = useHistory();
