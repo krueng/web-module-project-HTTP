@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams, useHistory } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import axios from 'axios';
 
+import DeleteMovieModal from './DeleteMovieModal';
+
 const Movie = (props) => {
     const { addToFavorites } = props;
-
+    const [displayModal, setDisplayModal] = useState(false)
     const [movie, setMovie] = useState('');
 
     const { id } = useParams();
-    const { push } = useHistory();
 
     useEffect(() => {
         axios.get(`http://localhost:5000/api/movies/${id}`)
@@ -20,22 +21,30 @@ const Movie = (props) => {
                 console.log(err.response);
             })
     }, [id]);
+
     const handleDelete = e => {
         e.preventDefault();
+        setDisplayModal(true);
+    }
+
+    const deleteFunc = () => {
         axios.delete(`http://localhost:5000/api/movies/${id}`)
             .then(resp => {
                 props.deleteMovie(id);
-                push(`/movies`);
+                setDisplayModal(false);
             })
             .catch(err => {
                 console.log(err);
             })
     }
 
+    const cancelFunc = () => {
+        setDisplayModal(false);
+    }
+
     const handleFavorite = movie => {
         addToFavorites(movie);
     }
-
     return (<div className="modal-page col">
         <div className="modal-dialog">
             <div className="modal-content">
@@ -73,6 +82,7 @@ const Movie = (props) => {
                 </div>
             </div>
         </div>
+        {displayModal ? <DeleteMovieModal deleteFunc={deleteFunc} cancelFunc={cancelFunc} /> : null}
     </div>);
 }
 
